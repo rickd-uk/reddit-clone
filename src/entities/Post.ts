@@ -1,4 +1,3 @@
-import { IsEmail, Length } from 'class-validator';
 import {
   Entity as TOEntity,
   Column,
@@ -6,15 +5,14 @@ import {
   BeforeInsert,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-
-import bcrypt from 'bcrypt';
-import { Exclude } from 'class-transformer';
 
 import Entity from './Entity';
 import User from './User';
 import { makeId, slugify } from '../util/helpers';
 import Sub from './Sub';
+import Comment from './Comment';
 
 @TOEntity('posts')
 export default class Post extends Entity {
@@ -25,7 +23,7 @@ export default class Post extends Entity {
 
   @Index()
   @Column()
-  identifier: string; // 7 char id
+  identifier: string; // 7 Character Id
 
   @Column()
   title: string;
@@ -47,6 +45,9 @@ export default class Post extends Entity {
   @ManyToOne(() => Sub, (sub) => sub.posts)
   @JoinColumn({ name: 'subName', referencedColumnName: 'name' })
   sub: Sub;
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
 
   @BeforeInsert()
   makeIdAndSlug() {

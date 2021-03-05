@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import bcrypt from 'bcrypt';
+// import { v4 as uuid } from 'uuid';
 import { Exclude } from 'class-transformer';
 
 import Entity from './Entity';
@@ -35,6 +36,9 @@ export default class User extends Entity {
   @Length(6, 255)
   password: string;
 
+  // @Column({ type: 'uuid' })
+  // uuid: string;
+
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
@@ -42,4 +46,8 @@ export default class User extends Entity {
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 6);
   }
+  // @BeforeInsert()
+  // createUuid() {
+  //   this.uuid = uuid();
+  // }
 }
