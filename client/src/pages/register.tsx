@@ -5,7 +5,7 @@ import Axios from 'axios';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
-import InputGroup from '../components/inputGroup';
+import InputGroup from '../components/inputgroup';
 
 Axios.defaults.baseURL = 'http://localhost:5000/api';
 
@@ -40,7 +40,7 @@ export default function Register() {
     }
   };
   return (
-    <div className='flex'>
+    <div className='flex bg-white'>
       <Head>
         <title>Register</title>
       </Head>
