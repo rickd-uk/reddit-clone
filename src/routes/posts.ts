@@ -4,6 +4,8 @@ import auth from '../middleware/auth';
 import Post from '../entities/Post';
 import Sub from '../entities/Sub';
 
+import user from '../middleware/user';
+
 // nfn - shortcut
 const createPost = async (req: Request, res: Response) => {
   // dob - shortcut
@@ -33,7 +35,12 @@ const getPosts = async (_: Request, res: Response) => {
   try {
     const posts = await Post.find({
       order: { createdAt: 'DESC' },
+      relations: ['comments', 'votes', 'sub'],
     });
+
+    if (res.locals.user) {
+      posts.forEach((p) => p.setUserVote(res.locals.user));
+    }
 
     return res.json(posts);
   } catch (err) {
@@ -62,8 +69,8 @@ const getPost = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.post('/', auth, createPost);
-router.get('/', getPosts);
+router.post('/', user, auth, createPost);
+router.get('/', user, getPosts);
 router.get('/:identifier/:slug', getPost);
 
 export default router;

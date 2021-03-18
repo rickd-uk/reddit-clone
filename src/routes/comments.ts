@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import Post from '../entities/Post';
 import Comment from '../entities/Comment';
 import auth from '../middleware/auth';
+import user from '../middleware/user';
 
 const commentOnPost = async (req: Request, res: Response) => {
   const { identifier, slug } = req.params;
@@ -30,6 +31,6 @@ const commentOnPost = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.post('/:identifier/:slug', auth, commentOnPost);
+router.post('/:identifier/:slug', user, auth, commentOnPost);
 
 export default router;
