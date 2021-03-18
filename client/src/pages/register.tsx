@@ -2,21 +2,22 @@ import { FormEvent, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Axios from 'axios';
-import classNames from 'classnames';
 import { useRouter } from 'next/router';
 
-import InputGroup from '../components/inputgroup';
-
-Axios.defaults.baseURL = 'http://localhost:5000/api';
+import InputGroup from '../components/InputGroup';
+import { useAuthState } from '../context/auth';
 
 export default function Register() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState<string>('');
+  const [password, setPassword] = useState('');
   const [agreement, setAgreement] = useState(false);
   const [errors, setErrors] = useState<any>({});
 
+  const { authenticated } = useAuthState();
+
   const router = useRouter();
+  if (authenticated) router.push('/');
 
   const submitForm = async (event: FormEvent) => {
     event.preventDefault();
@@ -35,10 +36,10 @@ export default function Register() {
 
       router.push('/login');
     } catch (err) {
-      console.log(err);
       setErrors(err.response.data);
     }
   };
+
   return (
     <div className='flex bg-white'>
       <Head>
@@ -46,15 +47,13 @@ export default function Register() {
       </Head>
 
       <div
-        className='h-screen bg-center w-36 bg-color'
-        style={{
-          backgroundImage: "url('/images/bricks.jpg')",
-        }}></div>
+        className='h-screen bg-center bg-cover w-36'
+        style={{ backgroundImage: "url('/images/bricks.jpg')" }}></div>
       <div className='flex flex-col justify-center pl-6'>
         <div className='w-70'>
           <h1 className='mb-2 text-lg font-medium'>Sign Up</h1>
           <p className='mb-10 text-xs'>
-            By continuing you agree to our User Agreement and Privacy Policy
+            By continuing, you agree to our User Agreement and Privacy Policy
           </p>
           <form onSubmit={submitForm}>
             <div className='mb-6'>
@@ -66,7 +65,7 @@ export default function Register() {
                 onChange={(e) => setAgreement(e.target.checked)}
               />
               <label htmlFor='agreement' className='text-xs cursor-pointer'>
-                I agree to get email about cool stuff on Reddit
+                I agree to get emails about cool stuff on Readit
               </label>
               <small className='block font-medium text-red-600'>
                 {errors.agreement}
@@ -102,9 +101,9 @@ export default function Register() {
             </button>
           </form>
           <small>
-            Already a redditer?
+            Already a readitor?
             <Link href='/login'>
-              <a className='ml-1 text-blue-500 uppercase'>Log in</a>
+              <a className='ml-1 text-blue-500 uppercase'>Log In</a>
             </Link>
           </small>
         </div>

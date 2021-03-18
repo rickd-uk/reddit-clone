@@ -107,12 +107,14 @@ export default function PostCard({
 
         <div className='flex'>
           <Link href={url}>
-            <ActionButton>
-              <div className=''>
-                <i className='mr-1 fas fa-comment-alt fas-xs'></i>
-                <span className='font-bold'>{commentCount} Comments</span>
-              </div>
-            </ActionButton>
+            <a>
+              <ActionButton>
+                <div className=''>
+                  <i className='mr-1 fas fa-comment-alt fas-xs'></i>
+                  <span className='font-bold'>{commentCount} Comments</span>
+                </div>
+              </ActionButton>
+            </a>
           </Link>
           <ActionButton>
             <i className='mr-1 fas fa-share fas-xs'></i>
