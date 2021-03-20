@@ -78,13 +78,14 @@ export default function PostCard({
       <div className='w-full p-2'>
         <div className='flex items-center'>
           <Link href={`/r/${subName}`}>
-            <Fragment>
-              <img
-                src='https://fmo.unl.edu/utility-services/images/staff-information/y_u_no_photo_Square.png'
-                className='w-6 h-6 mr-1 rounded-full cursor-pointer'
-              />
-              <a className='text-xs font-bold hover:underline'>/r/{subName}</a>
-            </Fragment>
+            <img
+              src='https://fmo.unl.edu/utility-services/images/staff-information/y_u_no_photo_Square.png'
+              className='w-6 h-6 mr-1 rounded-full cursor-pointer'
+            />
+            {/* <a className='text-xs font-bold hover:underline'>/r/{subName}</a> */}
+          </Link>
+          <Link href={`/r/${subName}`}>
+            <a className='text-xs font-bold hover:underline'>/r/{subName}</a>
           </Link>
 
           <p className='text-xs text-gray-500'>
