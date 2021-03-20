@@ -1,12 +1,16 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { getRepository } from 'typeorm';
 import { isEmpty } from 'class-validator';
+import multer, { FileFilterCallback } from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 import User from '../entities/User';
 import Sub from '../entities/Sub';
 import auth from '../middleware/auth';
 import user from '../middleware/user';
 import Post from '../entities/Post';
+import { makeId } from '../util/helpers';
 
 const createSub = async (req: Request, res: Response) => {
   const { name, title, description } = req.body;
@@ -67,9 +71,86 @@ const getSub = async (req: Request, res: Response) => {
   }
 };
 
+const ownSub = async (req: Request, res: Response, next: NextFunction) => {
+  const user: User = res.locals.user;
+
+  try {
+    const sub = await Sub.findOneOrFail({
+      where: { name: req.params.name },
+    });
+    if (sub.username !== user.username) {
+      return res.status(403).json({ error: "You don't own this sub" });
+    }
+    res.locals.sub = sub;
+    return next();
+  } catch (err) {
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: 'public/images',
+    filename: (_, file, cb) => {
+      const name = makeId(15);
+      cb(null, name + path.extname(file.originalname));
+    },
+  }),
+  fileFilter: (_, file: any, cb: FileFilterCallback) => {
+    if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png') {
+      cb(null, true);
+    } else {
+      cb(new Error('Not an image'));
+    }
+  },
+});
+
+const uploadSubImage = async (req: Request, res: Response) => {
+  const sub: Sub = res.locals.sub;
+  try {
+    const type = req.body.type;
+
+    console.log(`\n\n${req.file.path}\n\n`);
+
+    if (type !== 'image' && type !== 'banner') {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({ error: 'Invalid type' });
+    }
+
+    let oldImageUrn: string = '';
+
+    if (type === 'image') {
+      oldImageUrn = sub.imageUrn || '';
+      sub.imageUrn = req.file.filename;
+    } else if (type === 'banner') {
+      oldImageUrn = sub.bannerUrn || '';
+      sub.bannerUrn = req.file.filename;
+    }
+    await sub.save();
+
+    console.log(`\n\npublic\\images\\${oldImageUrn}\n\n`);
+
+    if (oldImageUrn !== '') {
+      fs.unlinkSync(`public/images/${oldImageUrn}`);
+    }
+
+    return res.json(sub);
+  } catch (err) {
+    return res.status(500).json({ error: 'something went wrong' });
+  }
+};
+
 const router = Router();
 
 router.post('/', user, auth, createSub);
 router.get('/:name', user, getSub);
+router.post(
+  '/:name/image',
+  user,
+  auth,
+  ownSub,
+  upload.single('file'),
+  uploadSubImage,
+);
 
 export default router;
