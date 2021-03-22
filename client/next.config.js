@@ -10,6 +10,6 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['cdn.pixabay.com', 'localhost'],
+    domains: ['www.gravatar.com', 'localhost'],
   },
 };

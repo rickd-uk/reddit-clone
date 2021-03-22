@@ -52,15 +52,19 @@ const getPosts = async (_: Request, res: Response) => {
 const getPost = async (req: Request, res: Response) => {
   const { identifier, slug } = req.params;
   try {
-    const posts = await Post.findOneOrFail(
+    const post = await Post.findOneOrFail(
       {
         identifier,
         slug,
       },
-      { relations: ['sub'] },
+      { relations: ['sub', 'votes'] },
     );
 
-    return res.json(posts);
+    if (res.locals.user) {
+      post.setUserVote(res.locals.user);
+    }
+
+    return res.json(post);
   } catch (err) {
     console.log(err);
     return res.status(404).json({ error: 'Post not found' });
@@ -71,6 +75,6 @@ const router = Router();
 
 router.post('/', user, auth, createPost);
 router.get('/', user, getPosts);
-router.get('/:identifier/:slug', getPost);
+router.get('/:identifier/:slug', user, getPost);
 
 export default router;

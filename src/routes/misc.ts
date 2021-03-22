@@ -64,7 +64,7 @@ const vote = async (req: Request, res: Response) => {
 
 const topSubs = async (_: Request, res: Response) => {
   try {
-    const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn", 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png')`;
+    const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn", 'https://www.gravatar.com/avatar/26a07923480af382c6af1addeed04c0a?d=mm&r=g&s=192')`;
     const subs = await getConnection()
       .createQueryBuilder()
       .select(
