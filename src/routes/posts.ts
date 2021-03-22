@@ -5,6 +5,7 @@ import Post from '../entities/Post';
 import Sub from '../entities/Sub';
 
 import user from '../middleware/user';
+import Comment from '../entities/Comment';
 
 // nfn - shortcut
 const createPost = async (req: Request, res: Response) => {
@@ -71,10 +72,58 @@ const getPost = async (req: Request, res: Response) => {
   }
 };
 
+const getPostComments = async (req: Request, res: Response) => {
+  const { identifier, slug } = req.params;
+  try {
+    const post = await Post.findOneOrFail({ identifier, slug });
+
+    const comments = await Comment.find({
+      where: { post },
+      order: { createdAt: 'DESC' },
+      relations: ['votes'],
+    });
+
+    if (res.locals.user) {
+      comments.forEach((c) => c.setUserVote(res.locals.user));
+    }
+
+    return res.json(comments);
+  } catch (err) {
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
+const commentOnPost = async (req: Request, res: Response) => {
+  const { identifier, slug } = req.params;
+
+  console.log(identifier, ' ', slug);
+
+  const body = req.body.body;
+
+  try {
+    const post = await Post.findOneOrFail({ identifier, slug });
+
+    const comment = new Comment({
+      body,
+      user: res.locals.user,
+      post,
+    });
+
+    await comment.save();
+
+    return res.status(201).json(comment);
+  } catch (err) {
+    console.log(err);
+    return res.status(404).json({ error: 'Post not found' });
+  }
+};
+
 const router = Router();
 
 router.post('/', user, auth, createPost);
 router.get('/', user, getPosts);
 router.get('/:identifier/:slug', user, getPost);
+router.get('/:identifier/:slug/comments', user, getPostComments);
+router.post('/:identifier/:slug/comments', user, auth, commentOnPost);
 
 export default router;
