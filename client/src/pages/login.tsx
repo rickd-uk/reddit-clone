@@ -41,12 +41,11 @@ export default function Register() {
       <Head>
         <title>Login</title>
       </Head>
-
       <div
-        className='h-screen bg-center bg-cover w-36'
+        className='hidden h-screen bg-center bg-cover w-36 sm:block'
         style={{ backgroundImage: "url('/images/bricks.jpg')" }}></div>
-      <div className='flex flex-col justify-center pl-6'>
-        <div className='w-70'>
+      <div className='flex flex-col justify-center pl-6 '>
+        <div className='py-20 w-70 '>
           <h1 className='mb-2 text-lg font-medium'>Login</h1>
           <p className='mb-10 text-xs'>
             By continuing, you agree to our User Agreement and Privacy Policy
