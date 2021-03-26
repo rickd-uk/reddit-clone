@@ -30,7 +30,7 @@ app.use(
     optionsSuccessStatus: 200,
   }),
 );
-app.get('/', (_, res) => {
+app.get('/api', (_, res) => {
   res.send('Hello world');
 });
 
