@@ -21,18 +21,22 @@ export default function Home() {
 
   const { authenticated } = useAuthState();
 
+  const description: string =
+    "Reddit is a network of communities based on people's interests. Find communities you're interested in, and become part of an online community!";
+
+  const title: string = 'readit: the front page of the internet';
+
   const {
     data,
     error,
-    mutate,
     size: page,
     setSize: setPage,
     isValidating,
     revalidate,
   } = useSWRInfinite<Post[]>((index) => `/posts?page=${index}`);
 
+  const isInitialLoading = !data && !error;
   const posts: Post[] = data ? [].concat(...data) : [];
-  // const isLoadingInitialData = !data && !error;
 
   useEffect(() => {
     if (!posts || posts.length === 0) return;
@@ -63,10 +67,15 @@ export default function Home() {
   return (
     <Fragment>
       <Head>
-        <title>readit: the front page of the internet</title>
+        <title>{title}</title>
+        <meta name='description' content={description}></meta>
+        <meta property='og:description' content={description}></meta>
+        <meta property='og:title' content={title}></meta>
+        <meta property='twitter:description' content={description}></meta>
+        <meta property='twitter:title' content={title}></meta>
       </Head>
       <div className='container flex pt-4'>
-        {isValidating && <p className='text-lg text-center'>Loading...</p>}
+        {isInitialLoading && <p className='text-lg text-center'>Loading...</p>}
         {/* Posts feed */}
         <div className='w-full px-4 md:w-160 md:p-0'>
           {posts?.map((post) => (

@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { Post, Comment } from '../../../../types';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import SideBar from '../../../../components/SideBar';
 
 import ActionButton from '../../../../components/ActionButton';
@@ -23,6 +23,7 @@ dayjs.extend(relativeTime);
 export default function PostPage() {
   // Local state
   const [newComment, setNewComment] = useState('');
+  const [description, setDescription] = useState('');
 
   // Global state
   const { authenticated, user } = useAuthState();
@@ -39,6 +40,13 @@ export default function PostPage() {
   );
 
   if (error) router.push('/');
+
+  useEffect(() => {
+    if (!post) return;
+    let desc = post.body || post.title;
+    desc = desc.substring(0, 158).concat('..');
+    setDescription(desc);
+  }, [post]);
 
   const vote = async (value: number, comment?: Comment) => {
     // If not logged in, go to login
@@ -86,6 +94,11 @@ export default function PostPage() {
     <>
       <Head>
         <title>{post?.title}</title>
+        <meta name='description' content={description}></meta>
+        <meta property='og:description' content={description}></meta>
+        <meta property='og:title' content={post?.title}></meta>
+        <meta property='twitter:description' content={description}></meta>
+        <meta property='twitter:title' content={post?.title}></meta>
       </Head>
       <Link href={`/r/${sub}`}>
         <a>
