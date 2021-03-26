@@ -16,7 +16,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>Reddit</title>
+          {/* <title>Reddit</title> */}
           <link rel='icon' type='image/svg+xml' href='/reddit.svg'></link>
           <meta property='og:site_name' content='reddit' />
           {/* <meta property='twitter:site' content='@reddit' /> */}
