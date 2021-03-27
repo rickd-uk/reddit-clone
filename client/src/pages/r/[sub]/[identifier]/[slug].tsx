@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 import Image from 'next/image';
 
-import classNames from 'classNames';
+import classNames from 'classnames';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
