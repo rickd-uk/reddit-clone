@@ -35,6 +35,7 @@ export default function Register() {
       setErrors(err.response.data);
     }
   };
+  console.log('testing github actions');
 
   return (
     <div className='flex bg-white'>
