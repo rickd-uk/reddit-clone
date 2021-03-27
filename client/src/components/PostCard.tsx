@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Post } from '../types';
 import ActionButton from './ActionButton';
 
-import classNames from 'classNames';
+import classNames from 'classnames';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
